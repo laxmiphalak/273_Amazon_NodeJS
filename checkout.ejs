@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>Amazon Web Store</title>
+<script src="/jquery-1.11.0.min.js"></script>
+<script>
+function isPositiveInteger(n) {
+    return n == "0" || ((n | 0) > 0 && n % 1 == 0);
+}
+$( document ).ready(function() {
+	$("#header").load("header.ejs");
+	$("#menu").load("menu.html");
+	$( "#place" ).click(function( event ) {
+
+	var ccno=document.forms["placeForm"]["ccno"].value;
+	if (ccno.length != 16 || !(isPositiveInteger(ccno)))
+	  {
+	  	alert("Please give a valid 16 digit credit card number"); 
+	  }
+	  else
+	  {
+	  	$( "#placeForm" ).submit();
+	  }
+
+	});	
+				
+});
+</script>
+</head>
+<body>
+<div id="header"></div><br />
+<% if(session.name.length != 0){ %>
+<h3>Welcome <%= session.name %>! </h3>
+&nbsp;&nbsp;<a href="http://localhost:4242/logout"><h3>Logout</h3></a>
+
+<h1 align="center">Place Your Order</h1>
+
+<div id="main">
+<table width="90%">
+<tr>
+<td width="10%" valign="top">
+<div id="menu" valign="top"></div>
+</td>
+<td>
+<div id="content">
+<% if(session.cart.length != 0){ %>
+<h2 align="left"> <u> Number of items in cart: <%= session.cart.length %> </u></h2>
+<table align="left" width=100%>
+
+<tr>
+<b>Total Cost: <%= session.total %> $</b>
+<form action="/order" id="placeForm" name="placeForm" method="post">
+<h4>Enter valid Shipping Address:</h4>
+<b>Street:</b><input type="text" name="street" id="street"></input><br/>
+<b>City:</b><input type="text" name="city" id="city"></input><br/>
+<b>Postal Code:</b><input type="text" name="pcode" id="pcode"></input><br/>
+<b>State:</b><input type="text" name="state" id="state"></input><br/>
+<h4>Enter valid Credit Card number:</h4>
+<b>Credit Card Number:</b><input type="text" name="ccno" id="ccno"></input><br/> <br/>
+<input type="submit" name="submit" id="place" value="Place Order"/> <br />
+</form>
+
+</tr>
+</table>
+<% } %>
+</div>
+</td>
+</tr>
+</table>
+</div><br />
+<% } else { %>
+<h3> you cannot access this page before signing in. </h3>
+<% } %>
+</body>
+</html>

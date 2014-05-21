@@ -1,0 +1,80 @@
+<html>
+<head>
+<title>Amazon Web Store</title>
+<script src="/jquery-1.11.0.min.js"></script>
+<script>
+$( document ).ready(function() {
+	$("#header").load("header.ejs");
+	$("#menu").load("menu.html");
+	$('[name="addcart"]').click(function(e){
+		e.preventDefault();
+		console.log('add to cart clicked');
+		                    
+		var data = {};
+		data.id = this.id;
+							
+		$.ajax({
+			type: 'POST',
+			data: JSON.stringify(data),
+		    contentType: 'application/json',
+		    url: 'http://localhost:4242/addtocart',						
+		    success: function(data) {
+			    console.log('success');
+		        console.log(JSON.stringify(data));
+		        alert("Product has been added to your shopping cart. Click on Shopping Cart icon to view your cart.")
+		    }
+		});
+	 
+	});				
+});
+</script>
+</head>
+<body>
+<div id="header"></div><br />
+<% if(session.name.length != 0){ %>
+<h3>Welcome <%= session.name %>! </h3>
+&nbsp;&nbsp;<a href="http://localhost:4242/logout"><h3>Logout</h3></a>
+You were last logged in on: <%= session.last_time %>
+<% } else { %>
+<a href="http://localhost:4242/login"><h3>Login</h3></a>
+<% } %>
+
+<h1 align="center">Welcome to Amazon Web Store</h1>
+
+<div id="main">
+<table width="90%">
+<tr>
+<td width="10%" valign="top">
+<div id="menu" valign="top"></div>
+</td>
+<td>
+<div id="content">
+<% if(session.name == "Admin"){ %>
+<a href="http://localhost:4242/addproduct">Add a new product</a>
+<% } %>
+<% if(products.length != 0){ %>
+<h2 align="left"> <u> <%= category %> </u></h2>
+<p align="left"> <%= desc %></p> <br><br/>
+<table align="center" width=100%>
+<% products.forEach(function(product){ %>
+<tr>
+<td align="center" width=80%>
+ <h3><%= product.product_name %></h3>
+ Description: <p> <%= product.product_desc %></p>
+ Cost: <%= product.product_cost %> $<br><br/><br><br/>
+</td>
+<td>
+<%= product.product_qty %> items available.
+<input type="button" name="addcart" id="<%= product.product_id %>" value="Add to cart"> </input>
+</td>
+</tr>
+<% }) %>
+</table>
+<% } %>
+</div>
+</td>
+</tr>
+</table>
+</div><br />
+</body>
+</html>

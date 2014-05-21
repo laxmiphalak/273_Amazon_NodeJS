@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Amazon Web Store</title>
+<script src="/jquery-1.11.0.min.js"></script>
+<script>
+$( document ).ready(function() {
+	$("#header").load("header.ejs");
+	$("#menu").load("menu.html");
+	$("#category").change(function() {
+	  if($("#category").val() == 0)
+	  {	  		
+			$("#othername").prop('disabled', false);
+			$("#otherdesc").prop('disabled', false);
+			$("#addCat").prop('disabled', false);
+	  }
+	  else
+	  {
+	  		$("#othername").prop('disabled', true);
+	  		$("#otherdesc").prop('disabled', true);
+	  		$("#addCat").prop('disabled', true);
+	  }
+	  $("#selectedCat").val($("#category").val());
+});		
+});
+</script>
+</head>
+<body>
+<div id="header"></div><br />
+<% if(session.name.length != 0){ %>
+<h3>Welcome <%= session.name %>! </h3>
+&nbsp;&nbsp;<a href="http://localhost:4242/logout"><h3>Logout</h3></a>
+<% } else { %>
+<a href="http://localhost:4242/login"><h3>Login</h3></a>
+<% } %>
+
+<h1 align="center">Add a new Product</h1>
+
+<div id="main">
+<form action="/addCategory" method="post">
+<% if(session.categories.length != 0){ %>
+<b>Select Category or specify other by choosing Other:</b>
+<select id="category" name="category">
+<% session.categories.forEach(function(category){ %>
+  <option value="<%= category.id %>"><%= category.category_name %></option>  
+  <% }) %>
+  <option value="0">Other</option>
+</select> <br/>
+<% } %>
+<b>New Category Name:</b><input type="text" name="othername" id="othername" disabled></input><br/> <br/>
+<b>New Category Description:</b><input type="text" name="otherdesc" id="otherdesc" disabled></input><br/> <br/>
+<input type="submit" name="submit" id="addCat" value="Add Category" disabled/><br />
+</form>
+<form action="/insertProduct" method="post">
+<input type="hidden" name="selectedCat" id="selectedCat" value=""></input>
+<b>Product Name:</b><input type="text" name="prodname" id="prodname"></input><br/> <br/>
+<b>Description:</b><input type="text" name="desc" id="desc"></input><br/> <br/>
+<b>Cost (in $):</b><input type="text" name="cost" id="cost"></input><br/> <br/>
+<b>Quantity:</b><input type="text" name="qty" id="qty"></input><br/> <br/>
+<input type="submit" name="submit" value="Add product"/><br />
+</form>
+</div><br />
+</body>
+</html>

@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>Amazon Web Store</title>
+<script src="/jquery-1.11.0.min.js"></script>
+<script>
+$( document ).ready(function() {
+	$("#header").load("header.ejs");
+	$("#menu").load("menu.html");
+		
+				
+});
+</script>
+</head>
+<body>
+<div id="header"></div><br />
+<% if(session.name.length != 0){ %>
+<h3>Welcome <%= session.name %>! </h3>
+&nbsp;&nbsp;<a href="http://localhost:4242/logout"><h3>Logout</h3></a>
+<% } else { %>
+<a href="http://localhost:4242/login"><h3>Login</h3></a>
+<% } %>
+
+<h1 align="center">Your Shopping Cart</h1>
+
+<div id="main">
+<table width="90%">
+<tr>
+<td width="10%" valign="top">
+<div id="menu" valign="top"></div>
+</td>
+<td>
+<div id="content">
+<% if(session.cart.length != 0){ %>
+<h2 align="left"> <u> Number of items in cart: <%= session.cart.length %> </u></h2>
+<table align="center" width=100%>
+<% session.cart.forEach(function(product){ %>
+<tr>
+<td align="center" width=80%>
+ <h3><%= product.product_name %></h3>
+ Cost: <%= product.product_cost %> $<br/><br/>
+</td>
+<td>
+<form action="/removefromcart" method="post">
+<input type="hidden" name="deleteid" id="deleteid" value="<%= product.product_id %>"> </input>
+<input type="submit" name="remove" id="remove" value="Delete"> </input>
+</form>
+</td>
+</tr>
+<% }) %>
+</table>
+<b>Total Cost: <%= session.total %> $</b>
+<form action="/checkout" method="post">
+<input type="submit" name="proceed" id="proceed" value="Proceed to checkout"> </input>
+</form>
+<% } %>
+</div>
+</td>
+</tr>
+</table>
+</div><br />
+</body>
+</html>
